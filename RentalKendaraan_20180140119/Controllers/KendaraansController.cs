@@ -31,14 +31,13 @@ namespace RentalKendaraan_20180140119.Controllers
                 menu = menu.Where(x => x.Ketersediaan == ktsd);
             }
 
-            return View(await menu.ToListAsync());
-
             //untuk search data
             if (!string.IsNullOrEmpty(searchString))
             {
                 menu = menu.Where(s => s.NoPolisi.Contains(searchString) || s.NamaKendaraan.Contains(searchString)
                 || s.NoStnk.Contains(searchString));
             }
+            return View(await menu.ToListAsync());
 
             //var rental_KendaraanContext = _context.Kendaraan.Include(k => k.IdKendaraanNavigation);
             //return View(await rental_KendaraanContext.ToListAsync());

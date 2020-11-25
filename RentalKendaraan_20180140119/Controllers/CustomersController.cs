@@ -19,9 +19,27 @@ namespace RentalKendaraan_20180140119.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string ktsd, string searchString)
         {
-            return View(await _context.Customer.ToListAsync());
+            var ktsdList = new List<string>();
+            var ktsdQuery = from d in _context.Customer orderby d.NamaCustomer select d.NamaCustomer;
+            ktsdList.AddRange(ktsdQuery.Distinct());
+            ViewBag.ktsd = new SelectList(ktsdList);
+            var menu = from m in _context.Customer.Include(k => k.Nik) select m;
+            if (!string.IsNullOrEmpty(ktsd))
+            {
+                menu = menu.Where(x => x.NamaCustomer == ktsd);
+            }
+
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                menu = menu.Where(s => s.NamaCustomer.Contains(searchString) || s.Nik.Contains(searchString)
+                || s.Alamat.Contains(searchString));
+            }
+            return View(await menu.ToListAsync());
+
+            //return View(await _context.Customer.ToListAsync());
         }
 
         // GET: Customers/Details/5
